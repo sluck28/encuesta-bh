@@ -13,6 +13,18 @@ class Preguntas extends Seeder
      */
     public function run(): void
     {
+
+
+
+        DB::table('questions')->insert(
+            [
+                'question' => 'INFORMACIÓN DE PERSONAL',
+                'type'=>'Titulo',
+                'options' =>''
+            ]
+        );
+
+
         DB::table('questions')->insert(
             [
                 'question' => '¿A qué rango de edad perteneces?',
@@ -62,6 +74,16 @@ class Preguntas extends Seeder
                 ])
             ]
         );
+
+        DB::table('questions')->insert(
+            [
+                'question' => 'EXPERIENCIA EN EL TRABAJO',
+                'type'=>'Titulo',
+                'options' =>''
+            ]
+        );
+
+
 
         DB::table('questions')->insert(
             [
@@ -168,8 +190,8 @@ class Preguntas extends Seeder
         DB::table('questions')->insert(
             [
                 'question' => '¿Qué te gustaría mejorar en cuanto a lideres, herramientas e instalaciones de BH TRADE MARKET?',
-                'type'=>'Unica',
-                'options' => 'Respuesta libre'                
+                'type'=>'Libre',
+                'options' => ''               
             ]
         );
 
@@ -243,6 +265,16 @@ class Preguntas extends Seeder
                 'Mas de 2 años'])
             ]
         );
+
+
+        DB::table('questions')->insert(
+            [
+                'question' => 'RELACIÓN DE PARES Y LÍNEA DE MANDO ',
+                'type'=>'Titulo',
+                'options' =>''
+            ]
+        );
+
 
         DB::table('questions')->insert(
             [
@@ -366,6 +398,15 @@ class Preguntas extends Seeder
                 'options'=>json_encode(['Si', 'No '])
             ]
         );
+
+        DB::table('questions')->insert(
+            [
+                'question' => 'ETICA Y COMPORTAMIENTO',
+                'type'=>'Titulo',
+                'options'=>''
+            ]
+        );
+
         DB::table('questions')->insert(
             [
                 'question' => '¿Conoces la misión y visión de BH TRADE MARKET?',
@@ -423,10 +464,8 @@ class Preguntas extends Seeder
         DB::table('questions')->insert(
             [
                 'question' => '¿Te gustaría compartirnos la situación de la cual fuiste testigo que vayan en contra de nuestros valores o colaboradores?',
-                'type'=>'Unica',
-                'options'=>json_encode(['Si espacio abierto',
-                'NO '
-                ])
+                'type'=>'Libre',
+                'options'=>''
             ]
         );
         DB::table('questions')->insert(
