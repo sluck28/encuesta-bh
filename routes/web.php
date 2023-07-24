@@ -20,3 +20,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/',[Respuesta::class,'index']);
 Route::post('/save',[Respuesta::class,'store'])->name('encuesta.save');
+Route::get('/finish',[Respuesta::class,'finish'])->name('encuesta.fin');

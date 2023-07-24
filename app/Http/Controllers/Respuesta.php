@@ -6,6 +6,9 @@ use App\Models\Answers;
 use App\Models\Questions;
 use Illuminate\Http\Request;
 
+
+
+
 class Respuesta extends Controller
 {
     //
@@ -15,17 +18,17 @@ class Respuesta extends Controller
         return view('welcome', compact('preguntas'));
     }
 
+    function finish()
+     {
+        
+        return view('finish');
+      }
 
 
     public function store(Request $request)
     {
+             
 
-
-        $request->validate([
-            'question_id.*' => 'required', // Asegura que al menos una opción esté seleccionada para cada pregunta
-        ], [
-            'question_id.*.required' => 'Debes seleccionar al menos una opción para cada pregunta.',
-        ]);
         $respuestas = $request->input('question_id');
         foreach ($respuestas as $preguntaId => $respuesta) 
         {            
@@ -35,6 +38,7 @@ class Respuesta extends Controller
             $respuestaModel->answer = $respuestaString;            
             $respuestaModel->save();
         }                
-        return redirect()->back();
+        return redirect()->route('encuesta.fin');
     }
+
 }

@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-
-    <title>Encuesta</title>
+        
+        <link rel="stylesheet" href="sweetalert2.min.css">
+    <title>EVALUACIÓN CLIMA LABORAL</title>
 </head>
 
 <style>
@@ -29,7 +30,14 @@
         </nav>
     </header>
     <div class="container mt-4">
-        <h1 class="">EVALUACIÓN CLIMA LABORAL 2023</h1>
+        <div class="row ">
+            <div class="col-md-2">
+                <img src="{{ asset('img/bhtrade.png') }}" alt="" width="80" height="80">
+            </div>
+            <div class="col-md-9">
+                <h1 class="">EVALUACIÓN CLIMA LABORAL 2023</h1>
+            </div>
+        </div>            
         <div id="introduccion">
             <section class="bg-white p-4 rounded shadow-lg">
                 <p class="fw-bold">
@@ -50,7 +58,11 @@
                 </p>
             </section>
         </div>
-        <br>
+        @if (session('success'))
+            <div class="mt-4 alert alert-sm alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <hr>
 
         <form action="{{ route('encuesta.save') }}" method="POST">
@@ -69,25 +81,32 @@
                     @break
 
                     @case('Unica')
-                        <div class="card  mb-3">
-                            <div id="pregunta" class="card-header bg-info fw-bold">
-                                {{ $pregunta->question }}
-                            </div>
-                            <div class="card-title">
-                                <div class="form-check">
-                                    @if ($opciones !== null)
-                                        @foreach ($opciones as $opcion)
-                                            <label>
-                                                <input class="mt-3v " type="radio" name="question_id[{{ $pregunta->id }}][]"
-                                                    value="{{ $opcion }}">
-                                                {{ $opcion }}
-                                            </label><br>
-                                        @endforeach
-                                    @else
-                                    @endif
-                                </div>
-                            </div>
+                    <div class="card mb-3">
+                        <div id="pregunta" class="card-header bg-info fw-bold">
+                            {{ $pregunta->question }}
                         </div>
+                        <div class="card-title">
+                            <div class="form-check">
+                                @if ($opciones !== null)
+                                    <div class="container">
+                                        <div class="row">
+                                            @foreach ($opciones as $opcion)
+                                                <div class="col-lg-3 col-md-4 col-sm-6">
+                                                    <label>
+                                                        <input class="mt-3" type="radio" name="question_id[{{ $pregunta->id }}][]"
+                                                            value="{{ $opcion }}" required>
+                                                        {{ $opcion }}
+                                                    </label>                                                   
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                           
+                        </div>
+                    </div>
+                    
                     @break
 
                     @case('Multiple')
@@ -98,13 +117,19 @@
                             <div class="card-title">
                                 <div class="form-check">
                                     @if ($opciones !== null)
+                                <div class="container">
+                                    <div class="row">
                                         @foreach ($opciones as $opcion)
+                                        <div class="col-lg-3 col-md-4 col-sm-6">
                                             <label>
                                                 <input class="mt-3" type="checkbox" name="question_id[{{ $pregunta->id }}][]"
-                                                    value="{{ $opcion }}">
+                                                value="{{ $opcion }}" onclick="limitarCasillas(this)" data-question-id="{{ $pregunta->id }}">
                                                 {{ $opcion }}
                                             </label><br>
+                                    </div>
                                         @endforeach
+                                    </div>
+                                </div>
                                     @else
                                     @endif
                                 </div>
@@ -119,24 +144,24 @@
                             </div>
                             <div class="card-title">
                                 <div class="form-check">
-                                    <input class="mt-4 form-control rounded" type="text"
-                                        name="question_id[{{ $pregunta->id }}][]" placeholder="Escribe tu respuesta"
-                                        value="">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-lg-11">
+                                                <input class="mt-4 form-control rounded" type="text"name="question_id[{{ $pregunta->id }}][]" placeholder="Escribe tu respuesta" required>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     @break
-
                     @default
-                @endswitch
-                @error('question_id.' . $pregunta->id)
-                <div class="alert alert-danger">
-                  <p>Faltan campos por llenar</p>
-                </div>
-            @enderror
+                @endswitch              
             @endforeach
-           
-            <button class="btn btn-success " type="submit" onclick="">Enviar</button>
+            @error('question_id')
+                        <p>Faltan datos por llenar</p>
+            @enderror
+            <button id="btnEnviar" class="btn btn-success" type="submit">Enviar</button>
     </div>
     </form>
     <footer class="bg-light mt-4 py-3">
@@ -146,21 +171,32 @@
                     BH TRADE MARKET S.A. DE C.V.&copy; 2023
                 </div>
                 <div class="col-md-6 text-end">
-                    <ul class="nav justify-content-end">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Terms</a>
-                        </li>
-                    </ul>
+                   
                 </div>
             </div>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
-    </script>
-</body>
+        </script>
+        <script>
+             function limitarCasillas(checkbox) {
+        // Obtener todas las casillas de verificación en el grupo
+        var checkboxes = document.querySelectorAll('input[name^="question_id[' + checkbox.dataset.questionId + '][]"]');
 
+        // Contar las casillas seleccionadas
+        var seleccionadas = 0;
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                seleccionadas++;
+            }
+        }
+
+        // Permitir hasta dos casillas seleccionadas
+        if (seleccionadas > 2) {
+            checkbox.checked = false; // Desmarcar la casilla que se acaba de marcar
+        }
+    }
+        </script>
+</body>
 </html>
